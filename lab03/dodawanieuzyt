@@ -1,0 +1,53 @@
+#!/bin/bash
+
+i=0
+echo "Podaj imie: "
+read name
+echo "Podaj nazwisko: "
+read lastname
+pass="haslo"
+l=$(echo $name | cut -c 1)
+username=$l$lastname
+nick=$username
+
+while [ test ];
+do
+	if cut -d: -f1 /etc/passwd | grep "$nick" >/dev/null
+	then
+		let "i++"
+		nick=$username$i
+	else
+		break;
+	fi
+done
+
+alias kopia="cp"
+alias ll="ls -d"
+
+sudo useradd -d /home/$nick -m -g users -p $(openssl passwd -1 $pass) -s /bin/bash $nick
+sudo passwd -e $nick
+
+sudo mkdir /home/"$nick"/public_html
+cd /home/"$nick"/public_html
+sudo mkdir private_html
+sudo touch /home/$nick/public_html/private_html/.htaccess
+
+sudo echo "AuthType Basic">>/home/$nick/public_html/private_html/.htaccess
+sudo echo 'AuthName "Password Protected Area"'>>/home/$nick/public_html/private_html/.htaccess
+sudo echo "AuthUserFile /home/"$nick"/.htpasswd">>/home/$nick/public_html/private_html/.htaccess
+sudo echo "Require valid-user">>/home/$nick/public_html/private_html/.htaccess
+
+sudo htpasswd -cdb  /home/$nick/.htpasswd $nick $pass
+
+echo $nick | sudo tee -a /etc/vsftpd.userlist
+cat /etc/vsftpd.userlist
+
+sudo chmod a-w /home/$nick/public_html
+sudo chown -R $nick /home/$nick/public_html/
+sudo chmod -R 755  /home/$nick/public_html/
+
+sudo chmod a-w /home/$nick/public_html/private_html
+sudo chown -R $nick /home/$nick/public_html/private_html/
+sudo chmod -R 755  /home/$nick/public_html/private_html/
+
+echo "Witaj $nick !"

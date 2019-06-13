@@ -1,0 +1,9 @@
+#!/bin/bash
+foldername=$(date +%Y_%m%d_%H_%M_%S)
+#filename=$(date +%H%M%S).txt
+mkdir "$foldername"
+cat /etc/passwd >>"$foldername/user_list"
+cat /etc/group >>"$foldername/group_list"
+iptables -L >>"$foldername/firewall"
+netstat >>"$foldername/uslugi"
+ps >>"$foldername/procesy"

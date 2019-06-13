@@ -1,0 +1,32 @@
+#!/bin/bash
+
+i=0
+echo "Podaj imie: "
+read name
+echo "Podaj nazwisko: "
+read lastname
+password="haslo"
+l=$(echo $name | cut -c 1)
+username=$l$lastname
+username2=$username
+
+while [ test ];
+do
+	if cut -d: -f1 /etc/passwd | grep "$username2" >/dev/null
+	then
+		let "i++"
+		username2=$username$i
+	else
+		break;
+	fi
+done
+sudo useradd -d /home/$username2 -m -p $(openssl passwd -1 $password) $username2
+sudo passwd -e $username2
+
+alias kopia="cp"
+alias ll="ls -d"
+mkdir /home/"$username2"/public_html
+mkdir /home/"$username2"/public_html/private_html
+echo "Witaj $username2 !"
+
+

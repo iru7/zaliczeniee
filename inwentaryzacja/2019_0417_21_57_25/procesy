@@ -1,0 +1,5 @@
+  PID TTY          TIME CMD
+ 7937 pts/0    00:00:00 sudo
+ 7939 pts/0    00:00:00 bash
+ 8565 pts/0    00:00:00 skrypt1
+ 8572 pts/0    00:00:00 ps

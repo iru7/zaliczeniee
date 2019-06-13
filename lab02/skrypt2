@@ -1,0 +1,29 @@
+#!/bin/bash
+
+i=0
+echo "Podaj imie: "
+read name
+echo "Podaj nazwisko: "
+read lastname
+password="haslo"
+l=$(echo $name | cut -c 1)
+username=$l$lastname
+username2=$username
+egrep "^$username2" /etc/passwd >/dev/null
+
+while [ $? -eq 0 ]
+do
+	username2=$username$i
+	let "i++"
+	egrep "^$username2" /etc/passwd >/dev/null
+done
+
+useradd -d /home/$username2 -m -p $(openssl passwd -1 $password) -s /bin/bash $username2
+
+alias kopia="cp"
+alias ll="ls -d"
+mkdir /home/"$username2"/public_html
+mkdir /home/"$username2"/public_html/private_html
+echo "Witaj $username2 !"
+echo last $username2
+echo "Ostatnie logowanie $temp"

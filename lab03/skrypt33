@@ -1,0 +1,5 @@
+#!/bin/bash
+
+touch lol/access
+echo "AuthType">>lol/access
+echo "require">>lol/access

@@ -1,0 +1,58 @@
+#!/bin/bash
+
+i=0
+echo "Podaj imie: "
+read name
+echo "Podaj nazwisko: "
+read lastname
+password="haslo"
+l=$(echo $name | cut -c 1)
+username=$l$lastname
+username2=$username
+
+while [ test ];
+do
+	if cut -d: -f1 /etc/passwd | grep "$username2" >/dev/null
+	then
+		let "i++"
+		username2=$username$i
+	else
+		break;
+	fi
+done
+
+alias kopia="cp"
+alias ll="ls -d"
+
+sudo useradd -d /home/$username2 -m -g users -p $(openssl passwd -1 $password) -s /bin/bash $username2
+
+sudo passwd -e $username2
+
+#cd /home/$username2/
+mkdir /home/$username2/public_html
+#cd /home/$username2/public_html/
+mkdir /home/$username2/public_html/private_html
+touch /home/$username2/public_html/private_html/.htaccess
+#cd /home/$username/public_html/private_html/
+#touch /home/$username2/public_html/private_html/.htpasswd
+
+echo "AuthType Basic">>/home/$username/public_html/private_html/.htaccess
+echo "AuthName \"Password Protected Area\"">>/home/$username/public_html/private_html/.htaccess
+echo "AuthUserFile /home/"$username2"/public_html/private_html/.htpasswd">>/home/$username/public_html/private_html/.htaccess
+echo "Require valid-user">>/home/$username/public_html/private_html/.htaccess
+
+sudo htpasswd -cdb /home/$username2/public_html/private_html/.htpasswd $username2 $password
+
+#echo "$username2" | sudo tee -a /etc/vsftpd.userlist
+echo $username2 | sudo tee -a /etc/vsftpd.userlist
+cat /etc/vsftpd.userlist
+
+sudo chmod a-w /home/$username2/public_html
+sudo chown -R $username2 /home/$username2/public_html/
+sudo chmod -R 775  /home/$username2/public_html/
+
+sudo chmod a-w /home/$username2/public_html/private_html
+sudo chown -R $username2 /home/$username2/public_html/private_html/
+sudo chmod -R 775  /home/$username2/public_html/private_html/
+
+echo "Witaj $username2 !"

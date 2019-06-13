@@ -1,0 +1,6 @@
+  PID TTY          TIME CMD
+ 5615 pts/1    00:00:00 skrypt1
+ 5622 pts/1    00:00:00 ps
+30045 pts/1    00:00:00 sudo
+30046 pts/1    00:00:00 bash
+30065 pts/1    00:00:00 nano
